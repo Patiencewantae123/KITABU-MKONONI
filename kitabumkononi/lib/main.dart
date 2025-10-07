@@ -1,122 +1,151 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(KitabuMkononiUI());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class KitabuMkononiUI extends StatefulWidget {
+  @override
+  _KitabuMkononiUIState createState() => _KitabuMkononiUIState();
+}
 
-  // This widget is the root of your application.
+class _KitabuMkononiUIState extends State<KitabuMkononiUI> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    HomePage(),
+    ReaderPage(),
+    FavoritesPage(),
+    SettingsPage(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'KitabuMkononi',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        primarySwatch: Colors.teal,
+        scaffoldBackgroundColor: Colors.grey[100],
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('KitabuMkononi', style: TextStyle(fontWeight: FontWeight.bold)),
+          centerTitle: true,
+        ),
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          onTap: (index) => setState(() => _selectedIndex = index),
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Nyumbani'),
+            BottomNavigationBarItem(icon: Icon(Icons.chrome_reader_mode), label: 'Soma'),
+            BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Vipendwa'),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Mipangilio'),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Vitabu Vipya', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 12),
+          Expanded(
+            child: ListView(
+              children: [
+                _buildBookCard('Hadithi za Kuingia', 'Mwandishi A'),
+                _buildBookCard('Mbinu za Maisha', 'Mwandishi B'),
+                _buildBookCard('Safari ya Ndoto', 'Mwandishi C'),
+              ],
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBookCard(String title, String author) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 3,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: ListTile(
+        leading: const Icon(Icons.book, color: Colors.teal),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(author),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+      ),
+    );
+  }
+}
+
+class ReaderPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Text(
+          'Chagua kitabu kutoka Nyumbani ili kuanza kusoma.\\n\\nHapa msomaji wa kitabu utaonekana. 📖',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Hakuna vitabu vipendwa bado ❤️',
+        style: TextStyle(fontSize: 16),
+      ),
+    );
+  }
+}
+
+class SettingsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Mipangilio ya Mtumiaji', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 20),
+          ListTile(
+            leading: const Icon(Icons.text_increase, color: Colors.teal),
+            title: const Text('Ukubwa wa Maandishi'),
+            subtitle: const Text('Rekebisha ukubwa wa maandishi kwa urahisi.'),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.brightness_6, color: Colors.teal),
+            title: const Text('Mandhari ya Usiku'),
+            subtitle: const Text('Badilisha kati ya mwanga na giza.'),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.language, color: Colors.teal),
+            title: const Text('Lugha'),
+            subtitle: const Text('Chagua lugha ya programu.'),
+          ),
+        ],
+      ),
     );
   }
 }
